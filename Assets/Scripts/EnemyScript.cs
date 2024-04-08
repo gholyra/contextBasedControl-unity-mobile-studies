@@ -22,16 +22,19 @@ public class EnemyScript : MonoBehaviour
         {
             speed = 1f;
             life = 1;
+            GetComponent<MeshRenderer>().material.color = Color.green;
         }
         else if (currentEnemy == 1)
         {
             speed = 0.25f;
             life = 5;
+            GetComponent<MeshRenderer>().material.color = Color.red;
         }
         else
         {
             speed = 0.5f;
             life = 2;
+            GetComponent<MeshRenderer>().material.color = Color.yellow;
         }
         
         // DEFINE O JOGADOR COMO SEU OBJETIVO DE PERSEGUIÇÃO
