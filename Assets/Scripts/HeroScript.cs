@@ -5,11 +5,14 @@ public class HeroScript : MonoBehaviour
     [SerializeField] private float speed;
     [SerializeField] private GameObject mesh;
     [SerializeField] private Camera heroCamera;
+    [SerializeField] private AudioClip[] audioClips;
     
     private Rigidbody rb;
     private Collider collider;
     private Animation anim;
-
+    private AudioSource audioSource;
+    
+    private bool isRunning;
     private Vector3 pointToGo;
     
     private void Start()
@@ -18,12 +21,14 @@ public class HeroScript : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         collider = GetComponent<Collider>();
         anim = GetComponent<Animation>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     private void Update()
     {
         Touch();
         Move();
+        Audios();
     }
 
     private void Touch()
@@ -63,11 +68,29 @@ public class HeroScript : MonoBehaviour
             transform.position = Vector3.MoveTowards(transform.position, pointToGo, speed * Time.deltaTime);
             transform.LookAt(pointToGo);
             anim.CrossFade("Run");
+            isRunning = true;
         }
         else
         {
             // ESTÁ PARADO NO DESTINO
             anim.CrossFade("Idle");
+            isRunning = false;
+        }
+    }
+
+    private void Audios()
+    {
+        if (isRunning && !audioSource.isPlaying)
+        {
+            audioSource.clip = audioClips[0];
+            audioSource.volume = 0.5f;
+            audioSource.pitch = 0.85f;
+            audioSource.Play();
+        }
+        else if (!isRunning)
+        {
+            audioSource.clip = null;
+            audioSource.Stop();
         }
     }
 }
