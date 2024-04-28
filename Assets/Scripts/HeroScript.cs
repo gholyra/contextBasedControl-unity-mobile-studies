@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class HeroScript : MonoBehaviour
@@ -12,8 +13,13 @@ public class HeroScript : MonoBehaviour
     private Animation anim;
     private AudioSource audioSource;
     
-    private bool isRunning;
     private Vector3 pointToGo;
+    private bool isRunning;
+
+    [SerializeField] private float timingIsHurt;
+    private bool isHurt;
+
+    private bool isFiring;
     
     private void Start()
     {
@@ -29,6 +35,7 @@ public class HeroScript : MonoBehaviour
         Touch();
         Move();
         Audios();
+        Fire();
     }
 
     private void Touch()
@@ -48,6 +55,16 @@ public class HeroScript : MonoBehaviour
                     {
                         pointToGo = hit.point;
                         pointToGo.y = transform.position.y;
+                        
+                        isFiring = false;
+                    }
+                    else if (hit.collider.CompareTag("Enemy"))
+                    {
+                        isFiring = true;
+                        
+                        Vector3 enemyPosition = hit.point;
+                        enemyPosition.y = transform.position.y;
+                        transform.LookAt(enemyPosition);
                     }
                 }
             }
@@ -60,37 +77,72 @@ public class HeroScript : MonoBehaviour
 
     private void Move()
     {
-        float distance = Vector3.Distance(transform.position, pointToGo);
-        
-        if ((int)distance != 0)
+        if (!isHurt && !isFiring)
         {
-            // ESTÁ INDO PARA NOVO DESTINO
-            transform.position = Vector3.MoveTowards(transform.position, pointToGo, speed * Time.deltaTime);
-            transform.LookAt(pointToGo);
-            anim.CrossFade("Run");
-            isRunning = true;
-        }
-        else
-        {
-            // ESTÁ PARADO NO DESTINO
-            anim.CrossFade("Idle");
-            isRunning = false;
+            float distance = Vector3.Distance(transform.position, pointToGo);
+            
+            if ((int)distance != 0)
+            {
+                // ESTÁ INDO PARA NOVO DESTINO
+                transform.position = Vector3.MoveTowards(transform.position, pointToGo, speed * Time.deltaTime);
+                transform.LookAt(pointToGo);
+                anim.CrossFade("Run");
+                isRunning = true;
+            }
+            else
+            {
+                // ESTÁ PARADO NO DESTINO
+                anim.CrossFade("Idle");
+                isRunning = false;
+            }
         }
     }
 
     private void Audios()
     {
-        if (isRunning && !audioSource.isPlaying)
+        if (isRunning && !audioSource.isPlaying && !isHurt)
         {
             audioSource.clip = audioClips[0];
-            audioSource.volume = 0.5f;
-            audioSource.pitch = 0.85f;
+            audioSource.volume = 0.3f;
+            audioSource.pitch = 0.65f;
             audioSource.Play();
         }
-        else if (!isRunning)
+        else if (!isRunning && !isHurt)
         {
             audioSource.clip = null;
             audioSource.Stop();
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.collider.CompareTag("Enemy"))
+        {
+            StartCoroutine(Hurt(timingIsHurt));
+        }
+    }
+
+    private IEnumerator Hurt(float t)
+    {
+        isHurt = true;
+
+        audioSource.clip = audioClips[1];
+        audioSource.volume = 1f;
+        audioSource.pitch = 1f;
+        audioSource.Play();
+            
+        anim.CrossFade("Hurt");
+        
+        yield return new WaitForSeconds(t);
+
+        isHurt = false;
+    }
+
+    private void Fire()
+    {
+        if (isFiring)
+        {
+            anim.CrossFade("Fire");
         }
     }
 }
