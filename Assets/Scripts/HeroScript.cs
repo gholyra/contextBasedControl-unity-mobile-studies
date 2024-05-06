@@ -7,6 +7,10 @@ public class HeroScript : MonoBehaviour
     [SerializeField] private GameObject mesh;
     [SerializeField] private Camera heroCamera;
     [SerializeField] private AudioClip[] audioClips;
+    [SerializeField] private float waitTimeForFire;
+    [SerializeField] private Light flashLight;
+    [SerializeField] private GameObject sparkParticles;
+    [SerializeField] private Transform sparkPoint;
     
     private Rigidbody rb;
     private Collider collider;
@@ -58,13 +62,11 @@ public class HeroScript : MonoBehaviour
                         
                         isFiring = false;
                     }
-                    else if (hit.collider.CompareTag("Enemy"))
+                    else if (hit.collider.CompareTag("Enemy") && !isFiring)
                     {
-                        isFiring = true;
-                        
                         Vector3 enemyPosition = hit.point;
                         enemyPosition.y = transform.position.y;
-                        transform.LookAt(enemyPosition);
+                        StartCoroutine(Firing(enemyPosition));
                     }
                 }
             }
@@ -144,5 +146,30 @@ public class HeroScript : MonoBehaviour
         {
             anim.CrossFade("Fire");
         }
+    }
+    
+    private IEnumerator Firing(Vector3 position)
+    {
+        isFiring = true;
+        transform.LookAt(position);
+        GameObject.Find("Pointer").GetComponent<WeaponScript>().Fire();
+
+        StartCoroutine(FlashLight());
+        
+        yield return new WaitForSeconds(waitTimeForFire);
+        
+        isFiring = false;
+    }
+
+    private IEnumerator FlashLight()
+    {
+        flashLight.enabled = true;
+
+        GameObject spark = Instantiate(sparkParticles);
+        spark.transform.position = sparkPoint.position;
+        Destroy(spark, 0.3f);
+        
+        yield return new WaitForSeconds(0.1f);
+        flashLight.enabled = false;
     }
 }

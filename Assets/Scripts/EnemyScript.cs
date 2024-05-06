@@ -4,41 +4,30 @@ using Random = UnityEngine.Random;
 public class EnemyScript : MonoBehaviour
 {
     [SerializeField] private GameObject target;
-
-    private int currentEnemy;
+    [SerializeField] private AudioClip[] clips;
+    [SerializeField] private GameObject[] explodeParticles;
+    
+    private AudioSource audioSource;
+    
     private float speed;
     private int life;
-    
+
+    private void Awake()
+    {
+        // DEFINE O JOGADOR COMO SEU OBJETIVO DE PERSEGUIÇÃO
+        target = GameObject.Find("Player");
+        
+        audioSource = GetComponent<AudioSource>();
+        audioSource.clip = clips[0];
+        audioSource.volume = 1f;
+        audioSource.loop = true;
+        audioSource.Play();
+    }
+
     private void Start()
     {
-        // SORTEIA UM NÚMERO PARA DEFINIR A CATEGORIA DO INIMIGO
-        // 0 (RÁPIDO E FRACO)
-        // 1 (LENTO E FORTE)
-        // 2 (MÉDIO E MÉDIO)
-        currentEnemy = Random.Range(0, 3);
-        
-        // ATRIBUI OS VALORES DE ACORDO COM A CATEGORIA
-        if (currentEnemy == 0)
-        {
-            speed = 1f;
-            life = 1;
-            GetComponent<MeshRenderer>().material.color = Color.green;
-        }
-        else if (currentEnemy == 1)
-        {
-            speed = 0.25f;
-            life = 5;
-            GetComponent<MeshRenderer>().material.color = Color.red;
-        }
-        else
-        {
-            speed = 0.5f;
-            life = 2;
-            GetComponent<MeshRenderer>().material.color = Color.yellow;
-        }
-        
-        // DEFINE O JOGADOR COMO SEU OBJETIVO DE PERSEGUIÇÃO
-        target = GameObject.FindGameObjectWithTag("Player");
+        speed = 0.25f;
+        life = 1;
     }
 
     private void Update()
@@ -59,7 +48,23 @@ public class EnemyScript : MonoBehaviour
         if (collision.gameObject.CompareTag("Projectile"))
         {
             life--;
-            if (life <= 0) Destroy(this.gameObject);
+            
+            if (life <= 0)
+            {
+                audioSource.clip = clips[1];
+                audioSource.volume = 1f;
+                audioSource.loop = false;
+                audioSource.Play();
+
+                for (int i = 0; i < explodeParticles.Length; i++)
+                {
+                    GameObject explode = Instantiate(explodeParticles[i]);
+                    explode.transform.position = transform.position;
+                    Destroy(explode, 1f);
+                }
+                
+                Destroy(this.gameObject, 0.25f);
+            }
         }
     }
 }

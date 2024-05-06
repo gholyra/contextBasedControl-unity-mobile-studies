@@ -113,9 +113,6 @@ PrefabInstance:
       addedObject: {fileID: 1655655325065595592}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b8a9893446a936949b590b430b072688, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 903683425809981564}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b8a9893446a936949b590b430b072688, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 7468812669815379195}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b8a9893446a936949b590b430b072688, type: 3}
       insertIndex: -1
@@ -147,33 +144,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 2.25, z: 1}
   m_Center: {x: 0, y: 1.125, z: 0.12}
---- !u!54 &903683425809981564
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5538609590401227352}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 84
-  m_CollisionDetection: 0
 --- !u!82 &7468812669815379195
 AudioSource:
   m_ObjectHideFlags: 0
@@ -184,11 +154,11 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 7b512799e9ded4c4d87ba3ccb8c3f3a0, type: 3}
-  m_PlayOnAwake: 1
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 0
   m_Volume: 0.3
   m_Pitch: 1
-  Loop: 1
+  Loop: 0
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -283,3 +253,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
+  clips:
+  - {fileID: 8300000, guid: 7b512799e9ded4c4d87ba3ccb8c3f3a0, type: 3}
+  - {fileID: 8300000, guid: fa4972b18df79403fa1e671374c5e812, type: 3}
+  explodeParticles:
+  - {fileID: 1892078723244562, guid: 46876a2780737ec45a19d62f88e5ce56, type: 3}
+  - {fileID: 100006, guid: 2a474af3f4c27be4e9bdce39cfe4315d, type: 3}
