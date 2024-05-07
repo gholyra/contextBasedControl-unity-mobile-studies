@@ -1539,7 +1539,7 @@ MonoBehaviour:
   flashLight: {fileID: 1004101263}
   sparkParticles: {fileID: 1995403933065894, guid: 4961a16ba01e09547be3e1c9d16d5ad0, type: 3}
   sparkPoint: {fileID: 1796397895}
-  timingIsHurt: 0.5
+  timingIsHurt: 1
 --- !u!82 &1895292850
 AudioSource:
   m_ObjectHideFlags: 0
