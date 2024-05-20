@@ -42,6 +42,11 @@ public class EnemyScript : MonoBehaviour
         if (collision.gameObject.CompareTag("Projectile"))
         {
             life--;
+
+            GameObject.Find("Canvas").GetComponent<DataScript>().score++;
+            GameObject.Find("Canvas").GetComponent<UIScript>().UIRefresh();
+
+            Destroy(collision.gameObject);
             
             if (life <= 0)
             {

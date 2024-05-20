@@ -1,8 +1,11 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class HeroScript : MonoBehaviour
 {
+    [SerializeField] private GameObject[] meshes;
+    
     [SerializeField] private float speed;
     [SerializeField] private GameObject mesh;
     [SerializeField] private Camera heroCamera;
@@ -11,6 +14,7 @@ public class HeroScript : MonoBehaviour
     [SerializeField] private Light flashLight;
     [SerializeField] private GameObject sparkParticles;
     [SerializeField] private Transform sparkPoint;
+    [SerializeField] private int invincibleTime;
     
     private Rigidbody rb;
     private Collider collider;
@@ -126,6 +130,8 @@ public class HeroScript : MonoBehaviour
 
     private IEnumerator Hurt(float t)
     {
+        DamageData(1);
+        
         isHurt = true;
 
         audioSource.clip = audioClips[1];
@@ -171,5 +177,38 @@ public class HeroScript : MonoBehaviour
         
         yield return new WaitForSeconds(0.1f);
         flashLight.enabled = false;
+    }
+
+    private void DamageData(int damagePoints)
+    {
+        GameObject.Find("Canvas").GetComponent<UIScript>().UIRefresh();
+        GameObject.Find("Canvas").GetComponent<DataScript>().hp -= damagePoints;
+
+        if (GameObject.Find("Canvas").GetComponent<DataScript>().hp <= 0)
+        {
+            SceneManager.LoadScene("GameOverScene");
+        }
+        else
+        {
+            StartCoroutine(Invincible(this.invincibleTime));
+        }
+    }
+
+    private IEnumerator Invincible(int time)
+    {
+        collider.enabled = false;
+        for (int i = 0; i < time; i++)
+        {
+            meshes[0].GetComponent<MeshRenderer>().enabled = !meshes[0].GetComponent<MeshRenderer>().enabled;
+            meshes[1].GetComponent<MeshRenderer>().enabled = !meshes[1].GetComponent<MeshRenderer>().enabled;
+            meshes[2].GetComponent<SkinnedMeshRenderer>().enabled = !meshes[2].GetComponent<SkinnedMeshRenderer>().enabled;
+                
+            yield return new WaitForSeconds(1f);
+        }
+        meshes[0].GetComponent<MeshRenderer>().enabled = true;
+        meshes[1].GetComponent<MeshRenderer>().enabled = true;
+        meshes[2].GetComponent<SkinnedMeshRenderer>().enabled = true;
+            
+        collider.enabled = true;
     }
 }
